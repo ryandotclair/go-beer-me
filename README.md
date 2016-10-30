@@ -11,16 +11,20 @@ A simple Go webapp that uses mongoDB and supports GET/PUT/DELETE of beers. Creat
 
 Easiest way is to use docker.
 
-Grab the mongo image
+Grab the mongo image:
+
 `docker pull mongo`
 
-Run it
+Run it:
+
 `docker run -dP mongo`
 
-Check the port number it's running on (I assume you know how to find the IP of the container host)
+Check the port number it's running on (I assume you know how to find the IP of the container host):
+
 `docker ps`
 
-Run this webapp
+Run this webapp:
+
 `docker run -dP -e MONGO_LOCATION=<ip:port_of_mongo> ryandotclair/go-beer-me`
 
 Then you can use Curl to use it
