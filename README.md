@@ -3,7 +3,7 @@ A simple Go webapp that uses mongoDB and supports GET/PUT/DELETE of beers. Creat
 
 ## Requires
 
-The only thing this requires is mongoDB. It doesn't use user/password (so don't add one... this is not meant to be used in prod). If you've got an external mongoDB instance, you can point it to it using the MONGO_LOCATION environment variable (example: `export MONGO_LOCATION=192.168.100.50:27017`).
+The only thing this requires is mongoDB. It doesn't use user/password (so don't add one... this is not meant to be used in prod). By default, go-beer-me assumes mongoDB is running locally (`localhost`). If you've got an external mongoDB instance, you can point it to it using the MONGO_LOCATION environment variable (example: `export MONGO_LOCATION=192.168.100.50`, optionally you can add a port if it's non-standard).
 
 ## Running it
 
