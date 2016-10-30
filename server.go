@@ -39,21 +39,40 @@ func main() {
 }
 
 func getSession() *mgo.Session {
-    // Get location of mongodb from environment
-    ml := "mongodb://" + os.Getenv("MONGO_LOCATION")
+
+    // Check for location of mongodb or use default
+    loc := getenv("MONGO_LOCATION", "localhost")
+
+    // TODO: Get USER/PASS overrides working
+    // // Check for custom mongo username or use default
+    // muser := getenv("MONGO_USER","")
+    //
+    // // Check for custom mongo password or use default
+    // mpass := getenv("MONGO_PASS","")
+
 
     // Connect to mongo
-    log.Println("Connecting to database at", os.Getenv("MONGO_LOCATION"))
+    log.Println("Connecting to database on", loc)
 
-    s, err := mgo.Dial(ml)
+    s, err := mgo.Dial(loc)
 
     // Check if connection error, is mongo running?
     if err != nil {
-        log.Println("Can't connect to mongo. Make sure MONGO_LOCATION environment variable is set.")
+        log.Println("Can't connect to mongo. Make sure MONGO_LOCATION environment variable is set if it's not local.")
         log.Println(err)
         panic(err)
     }
     log.Println("Connected to database.")
 
     return s
+}
+
+func getenv(key, fallback string) string {
+    value := os.Getenv(key)
+    if len(value) == 0 {
+        log.Println(key, "environment variable wasn't set. Using default.")
+        return fallback
+    }
+    log.Println(key, "was set. Overriding default.")
+    return value
 }
