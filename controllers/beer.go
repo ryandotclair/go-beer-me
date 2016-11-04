@@ -4,8 +4,8 @@ import (
   "encoding/json"
   "fmt"
   "net/http"
-
   "log"
+  "os"
 
   // Non-Standard
   "gopkg.in/mgo.v2"
@@ -41,20 +41,20 @@ func (bc BeerController) GetBeer(w http.ResponseWriter, r *http.Request, p httpr
     // Stub beer
     b := models.Beer{}
 
-    // Fetch user
+    // Fetch beer and store in b
     if err := bc.session.DB("go_beer_me").C("beer").FindId(oid).One(&b); err != nil {
         w.WriteHeader(404)
         return
     }
 
-    // Marshal provided interface into JSON structure
+    // Convert to JSON
     bj, _ := json.Marshal(b)
 
     // Write content-type, statuscode, payload
     w.Header().Set("Content-Type", "application/json")
     w.WriteHeader(200)
     fmt.Fprintf(w, "%s", bj)
-    log.Println("Retrieved beer " + oid)
+    log.Println("Retrieved beer ", oid)
 }
 
 func (bc BeerController) GetBeers(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
@@ -74,8 +74,17 @@ func (bc BeerController) GetBeers(w http.ResponseWriter, r *http.Request, p http
         return
     }
 
-    // Marshal provided interface into JSON structure
-    bj, _ := json.Marshal(beers)
+    type all_beers []beer
+
+    // Take all the data, convert to JSON, and append the IP:Port of the
+    // instance that's responding to the request
+    bj, _ := json.Marshal(struct{
+        all_beers
+        InstanceID string
+      }{
+        all_beers: all_beers(beers),
+        InstanceID: os.Getenv("CF_INSTANCE_ADDR"),
+    })
 
     // Write content-type, statuscode, payload
     w.Header().Set("Content-Type", "application/json")

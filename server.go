@@ -4,12 +4,27 @@ import (
   "net/http"
   "os"
   "log"
+  "fmt"
+  //"encoding/json"
+  "regexp"
 
   // Non-Standard
   "gopkg.in/mgo.v2"
   "github.com/julienschmidt/httprouter"
   "github.com/ryandotclair/go-beer-me/controllers"
 )
+
+// type jsonObject struct {
+//     UserProvided []*userProvided `json:"user-provided"`
+// }
+//
+// type userProvided struct {
+//     Credentials *credentials `json:"credentials"`
+// }
+//
+// type credentials struct {
+//     Location string `json:"MONGO_LOCATION"`
+// }
 
 func main() {
   // Instantiate a new router
@@ -19,40 +34,47 @@ func main() {
   bc := controllers.NewBeerController(getSession())
 
   // Get a beer resource
-  r.GET("/beer/:id", bc.GetBeer)
+  r.GET("/api/beer/:id", bc.GetBeer)
 
   // Get all beers
-  r.GET("/beer", bc.GetBeers)
+  r.GET("/api/beer", bc.GetBeers)
 
   // Create a beer
-  r.POST("/beer", bc.CreateBeer)
+  r.POST("/api/beer", bc.CreateBeer)
 
   // Delete a beer
-  r.DELETE("/beer/:id", bc.RemoveBeer)
+  r.DELETE("/api/beer/:id", bc.RemoveBeer)
 
   // Delete all beers
-  r.DELETE("/beer", bc.RemoveBeers)
+  r.DELETE("/api/beer", bc.RemoveBeers)
 
 
   // Fire up the server
-  http.ListenAndServe("0.0.0.0:3000", r)
+  http.ListenAndServe("0.0.0.0:" + os.Getenv("PORT"), r)
 }
 
 func getSession() *mgo.Session {
 
     // Check for location of mongodb or use default
-    loc := getenv("MONGO_LOCATION", "localhost")
+    VCAP := []byte(os.Getenv("VCAP_SERVICES"))
 
-    // TODO: Get USER/PASS overrides working
-    // // Check for custom mongo username or use default
-    // muser := getenv("MONGO_USER","")
-    //
-    // // Check for custom mongo password or use default
-    // mpass := getenv("MONGO_PASS","")
+    rx := regexp.MustCompile(`.*"MONGO_LOCATION":\s*?"(.+?)".*`)
 
+    var temp []byte
 
+    if m := rx.FindSubmatch(VCAP); len(m) > 0 {
+        temp = m[1]
+        os.Stdout.Write(m[1])
+        fmt.Fprintln(os.Stdout)
+
+    } else {
+        panic("error matching MONGO_LOCATION")
+    }
+
+    loc := string(temp[:])
     // Connect to mongo
     log.Println("Connecting to database on", loc)
+
 
     s, err := mgo.Dial(loc)
 
@@ -67,12 +89,16 @@ func getSession() *mgo.Session {
     return s
 }
 
-func getenv(key, fallback string) string {
-    value := os.Getenv(key)
-    if len(value) == 0 {
-        log.Println(key, "environment variable wasn't set. Using default.")
-        return fallback
-    }
-    log.Println(key, "was set. Overriding default.")
-    return value
-}
+// func parseLocation(buf []byte) (string, error) {
+// 	data := struct {
+// 		UserProvided []struct {
+// 			Credentials struct {
+// 				Location string `json:"MONGO_LOCATION"`
+// 			} `json:"credentials"`
+// 		} `json:"user-provided"`
+// 	}{}
+// 	if err := json.Unmarshal(buf, &data); err != nil {
+// 		return "", err
+// 	}
+// 	return data.UserProvided[0].Credentials.Location, nil
+// }

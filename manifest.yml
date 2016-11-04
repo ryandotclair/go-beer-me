@@ -1,0 +1,7 @@
+---
+applications:
+  - name: go-beer-me
+    memory: 10M
+    instances: 2
+    services:
+      - mongo
