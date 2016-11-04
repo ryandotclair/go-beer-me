@@ -1,6 +1,9 @@
 ## Purpose
 A simple Go webapp that uses mongoDB and supports GET/PUT/DELETE of beers. Created for my own learning.
 
+## Special Thanks
+Huge shout out to [akutz](https://github.com/akutz) from the [Dell EMC {Code} community](https://community.codedellemc.com/). This would have taken a lot longer if it wasn't for his golang expertise. Especially the pesky JSON parsing problem. I mean come on, this [gist](https://gist.github.com/akutz/8cd297d7f8d7bf5b4c43384e98a7f00b) is a work of art.
+
 ## Requires
 
 The only thing this requires is mongoDB up and running already and PCF.
