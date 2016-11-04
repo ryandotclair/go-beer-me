@@ -5,7 +5,6 @@ import (
   "os"
   "log"
   "fmt"
-  //"encoding/json"
   "regexp"
 
   // Non-Standard
@@ -13,18 +12,6 @@ import (
   "github.com/julienschmidt/httprouter"
   "github.com/ryandotclair/go-beer-me/controllers"
 )
-
-// type jsonObject struct {
-//     UserProvided []*userProvided `json:"user-provided"`
-// }
-//
-// type userProvided struct {
-//     Credentials *credentials `json:"credentials"`
-// }
-//
-// type credentials struct {
-//     Location string `json:"MONGO_LOCATION"`
-// }
 
 func main() {
   // Instantiate a new router
@@ -88,17 +75,3 @@ func getSession() *mgo.Session {
 
     return s
 }
-
-// func parseLocation(buf []byte) (string, error) {
-// 	data := struct {
-// 		UserProvided []struct {
-// 			Credentials struct {
-// 				Location string `json:"MONGO_LOCATION"`
-// 			} `json:"credentials"`
-// 		} `json:"user-provided"`
-// 	}{}
-// 	if err := json.Unmarshal(buf, &data); err != nil {
-// 		return "", err
-// 	}
-// 	return data.UserProvided[0].Credentials.Location, nil
-// }
