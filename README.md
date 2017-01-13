@@ -1,5 +1,5 @@
 ## Purpose
-A simple Go webapp that uses mongoDB and supports GET/PUT/DELETE of beers. Created for my own learning.
+A simple Go webapp that uses mongoDB and supports GET/POST/DELETE of beers. Created for my own learning.
 
 ## Requires
 
@@ -24,7 +24,7 @@ Steps:
 
 Now you can use `curl` to use it
 
-+ PUT beers in
++ POST beers in
   + `curl -XPOST -H 'Content-Type: application/json' -d '{"name": "Corona", "type": "Mexican", "ABV": 3.2, "cost":1.99}' <ip:port_of_go-beer-me>/beer`
 + GET the beer you put in
   + `curl <ip:port_of_go-beer-me>/beer/<id_of_beer>`
